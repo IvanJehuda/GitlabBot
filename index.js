@@ -59,6 +59,30 @@ app.post('/webhook/gitlab', async (req, res) => {
   }
 });
 
+// Variasi pesan biar gak boring
+const messageVariations = [
+  '{mentions} bang tolong bang, review MR ku bang 🙏',
+  '{mentions} mainkan bang tolong hehehe 😎',
+  '{mentions} halo kak, ada titipan MR nih, dicek ya kakk 🥺',
+  '{mentions} permisi suhu, mohon pencerahannya di MR ini 🙇',
+  '{mentions} ASSEMBLE! ada MR yang butuh disentuh tangan dinginmu ⚔️',
+  '{mentions} psst.. ada MR baru nih, jangan lupa direview ya 👀',
+  '{mentions} woi review dong, jangan php in ku 😤',
+  '{mentions} PPL gak akan jalan kalo MR-nya gak di-review loh 😔🙏',
+  '{mentions} tolong bang please bang, satu MR aja bang 😩',
+  '{mentions} dengan hormat, mohon kesediaannya untuk mereview MR berikut 🎩',
+  '{mentions} oi reviewer, ngopi dulu trus review MR ku ya ☕',
+  '{mentions} ding ding! reviewer dipanggil ke meja MR 🛎️',
+  '{mentions} sebelum deadline mepet, yuk direview dulu MR nya 🏃💨',
+  '{mentions} ada notif penting nih buat kamu, jangan di-skip yaa ✨',
+  '{mentions} GASKEUN review MR baru 🔥🔥🔥',
+];
+
+function getRandomMessage(mentions) {
+  const template = messageVariations[Math.floor(Math.random() * messageVariations.length)];
+  return template.replace('{mentions}', mentions);
+}
+
 async function sendDiscordNotification(payload, reviewers) {
   const mr = payload.object_attributes;
   const author = payload.user;
@@ -77,7 +101,7 @@ async function sendDiscordNotification(payload, reviewers) {
     .join(' ');
 
   const message = {
-    content: `${mentions} kamu di-assign sebagai reviewer 👀`,
+    content: getRandomMessage(mentions),
     embeds: [
       {
         title: `MR !${mr.iid}: ${mr.title}`,
